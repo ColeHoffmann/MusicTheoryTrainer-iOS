@@ -6,8 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		A099A3542F100F420023B4DE /* QuizMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = A099A3532F100F3E0023B4DE /* QuizMode.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		A099A3352F0EE6170023B4DE /* MajorScaleTrainer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MajorScaleTrainer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A099A3532F100F3E0023B4DE /* QuizMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizMode.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -34,6 +39,7 @@
 			children = (
 				A099A3372F0EE6170023B4DE /* MajorScaleTrainer */,
 				A099A3362F0EE6170023B4DE /* Products */,
+				A099A3532F100F3E0023B4DE /* QuizMode.swift */,
 			);
 			sourceTree = "<group>";
 		};
@@ -119,6 +125,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A099A3542F100F420023B4DE /* QuizMode.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

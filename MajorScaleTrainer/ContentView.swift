@@ -8,17 +8,29 @@
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject private var settingsViewModel = SettingsViewModel()
+    @StateObject private var performanceStore = PerformanceStore()
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationView {
+            Group {
+                switch settingsViewModel.mode {
+                case .completeScales:
+                    QuizView(
+                        viewModel: QuizViewModel(performance: performanceStore),
+                        settingsViewModel: settingsViewModel
+                    )
+
+                case .guessIntervals:
+                    IntervalView(
+                        viewModel: IntervalViewModel(performance: performanceStore),
+                        settingsViewModel: settingsViewModel
+                    )
+                }
+            }
+            .navigationTitle("Music Theory Trainer")
+            .navigationBarTitleDisplayMode(.inline)
         }
-        .padding()
     }
 }
 
-#Preview {
-    ContentView()
-}
