@@ -2,7 +2,7 @@ import SwiftUI
 
 struct SettingsView: View {
     @ObservedObject var settings: SettingsViewModel
-    @ObservedObject var performance: PerformanceStore
+    @ObservedObject var stats: StatsViewModel
     @Binding var isPresented: Bool
     
     @State private var localMode: QuizMode = .completeScales
@@ -64,22 +64,22 @@ struct SettingsView: View {
                     Divider()
 
                     
-                    // --- Performance Section ---
+                    // --- Stats Section ---
                     VStack(spacing: 12) {
-                        Text("Performance")
+                        Text("Stats")
                             .font(.headline)
                         
-                        Text("Score: \(performance.correctAnswers)/\(performance.totalQuestions) (\(getAccuracyText()))")
+                        Text("Score: \(stats.correctAnswers)/\(stats.totalQuestions) (\(getAccuracyText()))")
                             .font(.subheadline)
                             .foregroundColor(.primary)
                         
                         // Missed Scales
-                        if !performance.wrongScales.isEmpty {
+                        if !stats.wrongScales.isEmpty {
                             Text("Top missed scales:")
                                 .font(.subheadline)
                                 .foregroundColor(.secondary)
                             
-                            ForEach(performance.wrongScales.sorted(by: { $0.value > $1.value }).prefix(3), id: \.key) { scale, timesMissed in
+                            ForEach(stats.wrongScales.sorted(by: { $0.value > $1.value }).prefix(3), id: \.key) { scale, timesMissed in
                                 Text("\(scale) — missed \(timesMissed) time\(timesMissed > 1 ? "s" : "")")
                                     .font(.footnote)
                                     .foregroundColor(.secondary)
@@ -88,7 +88,7 @@ struct SettingsView: View {
                         
                         // Reset button
                         Button("Reset All Scores") {
-                            performance.resetAll()
+                            stats.resetAll()
                         }
                         .font(.footnote)
                         .padding(6)
@@ -123,10 +123,10 @@ struct SettingsView: View {
     }
     
     private func getAccuracyText() -> String {
-        if performance.totalQuestions == 0 {
+        if stats.totalQuestions == 0 {
             return "Unavailable"
         } else {
-            return String(format: "%.2f%%", performance.accuracy)
+            return String(format: "%.2f%%", stats.accuracy)
         }
     }
 }

@@ -47,7 +47,7 @@ struct IntervalView: View {
             Spacer()
             
             // Score
-            Text("Score: \(viewModel.performance.correctAnswers) / \(viewModel.performance.totalQuestions)")
+            Text("Score: \(viewModel.stats.correctAnswers) / \(viewModel.stats.totalQuestions)")
                 .font(.footnote)
                 .padding(.bottom, 4)
             IntervalSelectionComponent(settings: viewModel.settings).padding(.bottom, 16)
@@ -59,7 +59,7 @@ struct IntervalView: View {
             Image(systemName: "line.horizontal.3") // hamburger icon
         })
         .sheet(isPresented: $showSettings) {
-            SettingsView(settings: viewModel.settings, performance: viewModel.performance, isPresented: $showSettings)
+            SettingsView(settings: viewModel.settings, stats: viewModel.stats, isPresented: $showSettings)
         }
     
     }

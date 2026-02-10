@@ -2,7 +2,7 @@ import SwiftUI
 import Combine
 
 class IntervalViewModel: ObservableObject {
-    let performance: PerformanceStore
+    let stats: StatsViewModel
     @ObservedObject var settings: SettingsViewModel
 
     @Published var currentScale: [String] = []
@@ -10,22 +10,27 @@ class IntervalViewModel: ObservableObject {
     @Published var intervalIndex: Int = 0        // 1 = root, 2 = 2nd, etc.
     @Published var selectedAnswer: String? = nil
     @Published var hasMistake = false
-    
     @Published var currentKeyboard: [String] = ScaleLibrary.sharpKeyboard
-
     
-    init(performance: PerformanceStore, settings: SettingsViewModel) {
-        self.performance = performance
+    private var lastScaleName: String? = "z" // Track last scale
+
+    init(stats: StatsViewModel, settings: SettingsViewModel) {
+        self.stats = stats
         self.settings = settings
         nextQuestion()
+        lastScaleName = scaleName
     }
 
     func nextQuestion() {
-        currentScale = ScaleLibrary.randomScale()
-        scaleName = currentScale[0] + " major"
-        intervalIndex = Int.random(in: 1...7)
-        selectedAnswer = nil
-        currentKeyboard = ScaleLibrary.keyboard(forScale: currentScale)
+           var newScale: [String]
+           repeat {
+               newScale = ScaleLibrary.randomScale()
+           } while newScale[0] == lastScaleName  // repeat until it’s a new scale
+           currentScale = newScale
+           scaleName = currentScale[0] + " major"
+           intervalIndex = settings.enabledIntervals.randomElement() ?? 1
+           selectedAnswer = nil
+           currentKeyboard = ScaleLibrary.keyboard(forScale: currentScale)
         hasMistake = false
         
         intervalIndex = settings.enabledIntervals.randomElement() ?? 1
@@ -36,7 +41,7 @@ class IntervalViewModel: ObservableObject {
         selectedAnswer = note
         let correct = currentScale[intervalIndex - 1]
         if note == correct {
-            performance.recordResult(
+            stats.recordResult(
                 scale: scaleName,
                 wasPerfect: !hasMistake
             )

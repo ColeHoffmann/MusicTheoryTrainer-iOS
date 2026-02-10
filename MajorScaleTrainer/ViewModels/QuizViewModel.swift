@@ -2,19 +2,24 @@ import SwiftUI
 import Combine
 
 class QuizViewModel: ObservableObject {
-    let performance: PerformanceStore
+    let stats: StatsViewModel
     @ObservedObject var settings: SettingsViewModel
     @Published var currentQuestion: ScaleQuestion
     @Published var filledNotes: [Int: String] = [:]
     @Published var guessedNotes: [String] = []
     @Published var hasMistake = false
-    @Published var mode: QuizMode = .completeScales
     
-    init(performance: PerformanceStore, settings: SettingsViewModel) {
-        self.performance = performance
+    private var lastScaleName: String? = "z"  // Track last scale
+
+    
+    init(stats: StatsViewModel, settings: SettingsViewModel) {
+        self.stats = stats
         self.settings = settings
         let indices = settings.enabledIntervals.map { $0 - 1 }.sorted()
-        self.currentQuestion = QuizViewModel.generateRandomQuestion(missingIndices: indices)    }
+        self.currentQuestion = QuizViewModel.generateRandomQuestion(missingIndices: indices, lastScale: lastScaleName)
+        lastScaleName = currentQuestion.scaleName
+
+    }
     
     func selectNote(_ note: String) {
           guessedNotes.append(note)
@@ -25,7 +30,7 @@ class QuizViewModel: ObservableObject {
               filledNotes[index] = note
 
               if filledNotes.count == currentQuestion.missingIndices.count {
-                  performance.recordResult(
+                  stats.recordResult(
                       scale: currentQuestion.scaleName,
                       wasPerfect: !hasMistake
                   )
@@ -39,17 +44,18 @@ class QuizViewModel: ObservableObject {
     func nextQuestion() {
         let indices = settings.enabledIntervals.map { $0 - 1 }.sorted()
         
-        currentQuestion = QuizViewModel.generateRandomQuestion(missingIndices: indices)
-
+        currentQuestion = QuizViewModel.generateRandomQuestion(missingIndices: indices, lastScale: lastScaleName)
+        lastScaleName = currentQuestion.scaleName
         filledNotes = [:]
         guessedNotes = []
         hasMistake = false
     }
-
-    
-    static func generateRandomQuestion(missingIndices: [Int]) -> ScaleQuestion {
-        let scale = ScaleLibrary.randomScale()
-        // Make sure we only include valid indices
+ 
+    static func generateRandomQuestion(missingIndices: [Int], lastScale: String?) -> ScaleQuestion {
+        var scale: [String]
+        repeat {
+            scale = ScaleLibrary.randomScale()
+        } while scale[0] == lastScale  // ensure it’s not the same as last
         let validIndices = missingIndices.filter { $0 < scale.count }
         return ScaleQuestion(scaleName: scale[0], notes: scale, missingIndices: validIndices)
     }

@@ -100,7 +100,7 @@ struct QuizView: View {
             
             Spacer()
             
-            Text("Score: \(viewModel.performance.correctAnswers) / \(viewModel.performance.totalQuestions)")
+            Text("Score: \(viewModel.stats.correctAnswers) / \(viewModel.stats.totalQuestions)")
                 .font(.footnote)
             
             // Countdown
@@ -116,7 +116,7 @@ struct QuizView: View {
             Image(systemName: "line.horizontal.3")
         })
         .sheet(isPresented: $showSettings) {
-            SettingsView(settings: viewModel.settings, performance: viewModel.performance, isPresented: $showSettings)
+            SettingsView(settings: viewModel.settings, stats: viewModel.stats, isPresented: $showSettings)
         }
     }
     

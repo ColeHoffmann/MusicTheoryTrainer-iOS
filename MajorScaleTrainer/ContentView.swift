@@ -9,16 +9,16 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject private var settingsViewModel = SettingsViewModel()
-    @StateObject private var performanceStore = PerformanceStore()
+    @StateObject private var statsViewModel = StatsViewModel()
 
     var body: some View {
         NavigationView {
             Group {
                 switch settingsViewModel.mode {
                     case .completeScales:
-                    QuizView(viewModel: QuizViewModel(performance: performanceStore, settings: settingsViewModel))
+                    QuizView(viewModel: QuizViewModel(stats: statsViewModel, settings: settingsViewModel))
                     case .guessIntervals:
-                    IntervalView(viewModel: IntervalViewModel(performance: performanceStore, settings: settingsViewModel))
+                    IntervalView(viewModel: IntervalViewModel(stats: statsViewModel, settings: settingsViewModel))
                 }
             }
             .navigationTitle("Music Theory Trainer")
