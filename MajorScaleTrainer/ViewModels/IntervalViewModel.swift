@@ -8,8 +8,6 @@ class IntervalViewModel: ObservableObject {
     @Published var scaleName: String = ""
     @Published var intervalIndex: Int = 0        // 1 = root, 2 = 2nd, etc.
     @Published var selectedAnswer: String? = nil
-    @Published var totalAttempts = 0
-    @Published var correctAnswers = 0
     @Published var showCountdown: Bool = false
     @Published var countdown: Int = 0
     @Published var hasMistake = false
@@ -60,7 +58,7 @@ class IntervalViewModel: ObservableObject {
     
     func startCountdown() {
           showCountdown = true
-          countdown = 3
+          countdown = 1
           
           Task {
               while countdown > 0 {

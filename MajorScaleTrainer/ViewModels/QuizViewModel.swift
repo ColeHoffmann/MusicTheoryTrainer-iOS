@@ -11,7 +11,7 @@ class QuizViewModel: ObservableObject {
     @Published var hasMistake = false
     @Published var mode: QuizMode = .completeScales
     @Published var showCountdown = false
-    @Published var countdown = 3
+    @Published var countdown = 2
     
     @Published var blanksCount = 7  // slider setting
     
@@ -42,7 +42,7 @@ class QuizViewModel: ObservableObject {
     
     private func startCountdown() {
         showCountdown = true
-        countdown = 3
+        countdown = 2
         
         Task {
             while countdown > 0 {
