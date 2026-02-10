@@ -15,17 +15,10 @@ struct ContentView: View {
         NavigationView {
             Group {
                 switch settingsViewModel.mode {
-                case .completeScales:
-                    QuizView(
-                        viewModel: QuizViewModel(performance: performanceStore),
-                        settingsViewModel: settingsViewModel
-                    )
-
-                case .guessIntervals:
-                    IntervalView(
-                        viewModel: IntervalViewModel(performance: performanceStore),
-                        settingsViewModel: settingsViewModel
-                    )
+                    case .completeScales:
+                    QuizView(viewModel: QuizViewModel(performance: performanceStore, settings: settingsViewModel))
+                    case .guessIntervals:
+                    IntervalView(viewModel: IntervalViewModel(performance: performanceStore, settings: settingsViewModel))
                 }
             }
             .navigationTitle("Music Theory Trainer")

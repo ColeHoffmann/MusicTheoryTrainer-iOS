@@ -3,7 +3,6 @@ import SwiftUI
 struct QuizView: View {
     
     @StateObject var viewModel: QuizViewModel
-    @ObservedObject var settingsViewModel: SettingsViewModel
     @State private var showSettings = false
     
     var body: some View {
@@ -82,7 +81,7 @@ struct QuizView: View {
             }
             
             // Feedback
-            if !viewModel.guessedNotes.isEmpty && !viewModel.showCountdown {
+            if !viewModel.guessedNotes.isEmpty && !viewModel.settings.showCountdown {
                 if viewModel.filledNotes.count == viewModel.currentQuestion.missingIndices.count && !viewModel.hasMistake {
                     Text("Correct!")
                         .foregroundColor(.green)
@@ -105,33 +104,10 @@ struct QuizView: View {
                 .font(.footnote)
             
             // Countdown
-            CountdownComponent(isVisible: viewModel.showCountdown, countdown: viewModel.countdown)
+            CountdownComponent(isVisible: viewModel.settings.countdownEnabled && viewModel.settings.showCountdown, countdown: viewModel.settings.countdown)
             
-            // --- Slider at the very bottom ---
-            if viewModel.mode == .completeScales {
-                VStack(spacing: 4) {
-                    Text("Number of Notes to Fill In: \(viewModel.blanksCount)")
-                        .font(.subheadline)
-                    
-                    Slider(value: Binding(
-                        get: { Double(viewModel.blanksCount) },
-                        set: { newVal in
-                            viewModel.blanksCount = Int(newVal)
-                        }
-                    ), in: 1...7,
-                           step: 1,
-                           onEditingChanged: { editing in
-                        if !editing {
-                            viewModel.nextQuestion()
-                        }
-                    }
-                           
-                           
-                    )
-                    .padding(.horizontal)
-                }
-                .padding(.bottom, 16)
-            }
+            IntervalSelectionComponent(settings: viewModel.settings).padding(.bottom, 16)
+            
         }
         .padding(.horizontal, 16)
         .navigationBarItems(trailing: Button {
@@ -140,7 +116,7 @@ struct QuizView: View {
             Image(systemName: "line.horizontal.3")
         })
         .sheet(isPresented: $showSettings) {
-            SettingsView(settings: settingsViewModel, performance: viewModel.performance, isPresented: $showSettings)
+            SettingsView(settings: viewModel.settings, performance: viewModel.performance, isPresented: $showSettings)
         }
     }
     

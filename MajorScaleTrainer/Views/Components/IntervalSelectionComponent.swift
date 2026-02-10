@@ -1,24 +1,27 @@
 import SwiftUI
 
 struct IntervalSelectionComponent : View {
-    @ObservedObject var viewModel: IntervalViewModel
+    @ObservedObject var settings: SettingsViewModel
     
     var body: some View {
     VStack(spacing: 6) {
+        Text("Enabled Intervals:")
+            .font(.caption2)
+            .foregroundColor(.secondary)
         HStack(spacing: 12) {
             ForEach(1...7, id: \.self) { i in
                 Button {
                     withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
-                        viewModel.toggleInterval(i)
+                        settings.toggleInterval(i)
                     }
                 } label: {
                     Text("\(i)")
                         .font(.subheadline)
-                        .foregroundColor(viewModel.enabledIntervals.contains(i) ? .white : .black)
+                        .foregroundColor(settings.enabledIntervals.contains(i) ? .white : .black)
                         .frame(width: 32, height: 32)
                         .background(
                             Circle()
-                                .fill(viewModel.enabledIntervals.contains(i) ? Color.blue : Color.gray.opacity(0.3))
+                                .fill(settings.enabledIntervals.contains(i) ? Color.blue : Color.gray.opacity(0.3))
                         )
                 }
             }

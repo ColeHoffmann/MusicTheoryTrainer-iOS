@@ -40,6 +40,29 @@ struct SettingsView: View {
                     
                     Divider()
                     
+                        
+                    // --- Countdown Section ---
+                    VStack(spacing: 12) {
+                        Text("Countdown")
+                            .font(.headline)
+                        
+                        Text("Show countdown after correct answer:")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                        
+                        // Centered Toggle
+                        Toggle("", isOn: $settings.countdownEnabled)
+                            .toggleStyle(SwitchToggleStyle(tint: .blue))
+                            .labelsHidden()                     // hide any label space
+                            .frame(width: 50)                   // small width for the toggle
+                            .frame(maxWidth: .infinity)         // expand container
+                            .multilineTextAlignment(.center)    // center
+                    }
+                    .padding(.horizontal)
+
+                    
+                    Divider()
+
                     
                     // --- Performance Section ---
                     VStack(spacing: 12) {

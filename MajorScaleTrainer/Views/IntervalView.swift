@@ -3,7 +3,6 @@ import SwiftUI
 struct IntervalView: View {
     
     @StateObject var viewModel: IntervalViewModel
-    @ObservedObject var settingsViewModel: SettingsViewModel
     @State private var showSettings = false
     
     var body: some View {
@@ -20,7 +19,7 @@ struct IntervalView: View {
             Spacer()
             
             //Keyboard
-            KeyboardComponent(notes: viewModel.currentKeyboard,isDisabled: viewModel.showCountdown ,buttonColor: buttonColor,onTap: viewModel.selectNote)
+            KeyboardComponent(notes: viewModel.currentKeyboard,isDisabled: viewModel.settings.showCountdown ,buttonColor: buttonColor,onTap: viewModel.selectNote)
             
             // Feedback + Countdown stack (fixed height)
             VStack(spacing: 4) {
@@ -39,7 +38,8 @@ struct IntervalView: View {
                         .font(.headline)
                 }
                 
-                CountdownComponent(isVisible: viewModel.showCountdown, countdown: viewModel.countdown)
+                CountdownComponent(isVisible: viewModel.settings.countdownEnabled && viewModel.settings.showCountdown, countdown:viewModel.settings.countdown)
+
             }
             .frame(height: 50) // reserve space like QuizView
             .padding(.bottom, 8)
@@ -50,10 +50,7 @@ struct IntervalView: View {
             Text("Score: \(viewModel.performance.correctAnswers) / \(viewModel.performance.totalQuestions)")
                 .font(.footnote)
                 .padding(.bottom, 4)
-            
-        
-            IntervalSelectionComponent(viewModel: viewModel).padding(.bottom, 16)
-            
+            IntervalSelectionComponent(settings: viewModel.settings).padding(.bottom, 16)
         }
         .padding(.horizontal, 16)
         .navigationBarItems(trailing: Button {
@@ -62,9 +59,9 @@ struct IntervalView: View {
             Image(systemName: "line.horizontal.3") // hamburger icon
         })
         .sheet(isPresented: $showSettings) {
-            SettingsView(settings: settingsViewModel, performance: viewModel.performance, isPresented: $showSettings)
+            SettingsView(settings: viewModel.settings, performance: viewModel.performance, isPresented: $showSettings)
         }
-        
+    
     }
     
     

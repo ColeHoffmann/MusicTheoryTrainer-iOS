@@ -2,23 +2,19 @@ import SwiftUI
 import Combine
 
 class QuizViewModel: ObservableObject {
-    
     let performance: PerformanceStore
-    
+    @ObservedObject var settings: SettingsViewModel
     @Published var currentQuestion: ScaleQuestion
     @Published var filledNotes: [Int: String] = [:]
     @Published var guessedNotes: [String] = []
     @Published var hasMistake = false
     @Published var mode: QuizMode = .completeScales
-    @Published var showCountdown = false
-    @Published var countdown = 2
     
-    @Published var blanksCount = 7  // slider setting
-    
-    init(performance: PerformanceStore) {
+    init(performance: PerformanceStore, settings: SettingsViewModel) {
         self.performance = performance
-        self.currentQuestion = QuizViewModel.generateRandomQuestion(blanksCount: 7)
-    }
+        self.settings = settings
+        let indices = settings.enabledIntervals.map { $0 - 1 }.sorted()
+        self.currentQuestion = QuizViewModel.generateRandomQuestion(missingIndices: indices)    }
     
     func selectNote(_ note: String) {
           guessedNotes.append(note)
@@ -33,39 +29,29 @@ class QuizViewModel: ObservableObject {
                       scale: currentQuestion.scaleName,
                       wasPerfect: !hasMistake
                   )
-                  startCountdown()
+                  settings.startCountdown {self.nextQuestion()}
               }
           } else {
               hasMistake = true
           }
       }
     
-    private func startCountdown() {
-        showCountdown = true
-        countdown = 2
-        
-        Task {
-            while countdown > 0 {
-                try await Task.sleep(nanoseconds: 1_000_000_000)
-                countdown -= 1
-            }
-            showCountdown = false
-            nextQuestion()
-        }
-    }
-    
     func nextQuestion() {
-        currentQuestion = QuizViewModel.generateRandomQuestion(blanksCount: blanksCount)
+        let indices = settings.enabledIntervals.map { $0 - 1 }.sorted()
+        
+        currentQuestion = QuizViewModel.generateRandomQuestion(missingIndices: indices)
+
         filledNotes = [:]
         guessedNotes = []
         hasMistake = false
-        showCountdown = false
     }
+
     
-    static func generateRandomQuestion(blanksCount: Int) -> ScaleQuestion {
+    static func generateRandomQuestion(missingIndices: [Int]) -> ScaleQuestion {
         let scale = ScaleLibrary.randomScale()
-        let indices = Array(0..<scale.count).shuffled().prefix(blanksCount)
-        return ScaleQuestion(scaleName: scale[0], notes: scale, missingIndices: Array(indices))
+        // Make sure we only include valid indices
+        let validIndices = missingIndices.filter { $0 < scale.count }
+        return ScaleQuestion(scaleName: scale[0], notes: scale, missingIndices: validIndices)
     }
     
     // Current keyboard is always all notes
