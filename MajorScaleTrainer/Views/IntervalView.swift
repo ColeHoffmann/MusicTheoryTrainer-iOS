@@ -65,7 +65,6 @@ struct IntervalView: View {
     }
     
     
-    // MARK: Button Color Logic
     private func buttonColor(note: String) -> Color {
         if viewModel.selectedAnswer == note && note == viewModel.currentScale[viewModel.intervalIndex - 1] {
             return .green

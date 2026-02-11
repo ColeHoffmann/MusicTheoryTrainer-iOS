@@ -6,108 +6,102 @@ struct QuizView: View {
     @State private var showSettings = false
     
     var body: some View {
-        VStack(spacing: 24) {
+        VStack {
             
-            Spacer()
-            
-            // Scale Title
-            Text(viewModel.currentQuestion.scaleName + " Major")
-                .font(.title)
-                .fontWeight(.bold)
-            
-            // Scale notes
-            HStack(spacing: 16) {
-                ForEach(Array(viewModel.currentQuestion.notes.enumerated()), id: \.offset) { index, note in
-                    VStack(spacing: 6) {
-                        
-                        // --- NOTE AREA (fixed height for alignment) ---
-                        ZStack {
-                            if viewModel.currentQuestion.missingIndices.contains(index) {
-                                // Missing note slot
-                                if let filled = viewModel.filledNotes[index] {
-                                    Text(filled)
+            // ---------- TOP SECTION ----------
+            VStack(spacing: 24) {
+                
+                // Scale Title
+                Text(viewModel.currentQuestion.scaleName + " Major")
+                    .font(.title)
+                    .fontWeight(.bold)
+                
+                // Scale notes
+                HStack(spacing: 16) {
+                    ForEach(Array(viewModel.currentQuestion.notes.enumerated()), id: \.offset) { index, note in
+                        VStack(spacing: 6) {
+                            
+                            // NOTE AREA
+                            ZStack {
+                                if viewModel.currentQuestion.missingIndices.contains(index) {
+                                    if let filled = viewModel.filledNotes[index] {
+                                        Text(filled)
+                                            .font(.title2)
+                                            .fontWeight(.semibold)
+                                            .transition(.opacity)
+                                    }
+                                } else {
+                                    Text(note)
                                         .font(.title2)
                                         .fontWeight(.semibold)
-                                        .transition(.opacity)
                                 }
-                            } else {
-                                // Already-known note
-                                Text(note)
-                                    .font(.title2)
-                                    .fontWeight(.semibold)
                             }
+                            .frame(height: 28)
+                            
+                            // UNDERLINE
+                            Rectangle()
+                                .fill(
+                                    viewModel.currentQuestion.missingIndices.contains(index)
+                                    ? Color.black
+                                    : Color.clear
+                                )
+                                .frame(width: 32, height: 4)
+                            
+                            // ORDINAL
+                            Text((index + 1).ordinalString)
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                                .frame(height: 14)
                         }
-                        .frame(height: 28)
-                        
-                        // --- UNDERLINE ---
-                        Rectangle()
-                            .fill(
-                                viewModel.currentQuestion.missingIndices.contains(index)
-                                ? Color.black
-                                : Color.clear
-                            )
-                            .frame(width: 32, height: 4)
-                        
-                        // --- ORDINAL ---
-                        Text((index + 1).ordinalString)
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
-                            .frame(height: 14)
+                        .frame(width: 40)
                     }
-                    .frame(width: 40)
                 }
-            }
-            .animation(.easeOut(duration: 0.2), value: viewModel.filledNotes)
-            
-            
-            Spacer()
-            
-            
-            // Keyboard
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 4), spacing: 12) {
-                ForEach(viewModel.currentKeyboard, id: \.self) { note in
-                    Button {
-                        viewModel.selectNote(note)
-                    } label: {
-                        Text(note)
-                            .frame(maxWidth: .infinity)
-                            .padding(12)
-                            .background(buttonColor(note: note))
-                            .foregroundColor(.white)
-                            .cornerRadius(8)
+                .padding(.top, 16)
+                .animation(.easeOut(duration: 0.2), value: viewModel.filledNotes)
+                
+                // Feedback
+                Group {
+                    if !viewModel.guessedNotes.isEmpty && !viewModel.settings.showCountdown {
+                        if viewModel.filledNotes.count == viewModel.currentQuestion.missingIndices.count && !viewModel.hasMistake {
+                            Text("Correct!")
+                                .foregroundColor(.green)
+                                .font(.headline)
+                        } else if viewModel.hasMistake {
+                            Text("Some notes incorrect")
+                                .foregroundColor(.red)
+                                .font(.headline)
+                        } else {
+                            Text(" ")
+                        }
+                    } else {
+                        Text(" ")
                     }
-                    .disabled(viewModel.guessedNotes.contains(note))
                 }
+                .frame(height: 24)
+            }.padding(.top, 32)
+            
+            Spacer()   // ← the only spacer, separating sections
+            
+            // ---------- BOTTOM SECTION ----------
+            VStack(spacing: 16) {
+                
+                KeyboardComponent(
+                    notes: viewModel.currentKeyboard,
+                    isDisabled: viewModel.settings.showCountdown,
+                    buttonColor: buttonColor,
+                    onTap: viewModel.selectNote
+                )
+                
+                Text("Score: \(viewModel.stats.correctAnswers) / \(viewModel.stats.totalQuestions)")
+                    .font(.footnote).padding(.top, 64)
+                
+                CountdownComponent(
+                    isVisible: viewModel.settings.countdownEnabled && viewModel.settings.showCountdown,
+                    countdown: viewModel.settings.countdown
+                )
+                
+                IntervalSelectionComponent(settings: viewModel.settings)
             }
-            
-            // Feedback
-            if !viewModel.guessedNotes.isEmpty && !viewModel.settings.showCountdown {
-                if viewModel.filledNotes.count == viewModel.currentQuestion.missingIndices.count && !viewModel.hasMistake {
-                    Text("Correct!")
-                        .foregroundColor(.green)
-                        .font(.headline)
-                        .frame(height: 24)
-                } else if viewModel.hasMistake {
-                    Text("Some notes incorrect")
-                        .foregroundColor(.red)
-                        .font(.headline)
-                        .frame(height: 24)
-                } else {
-                    Text(" ")
-                        .frame(height: 24)
-                }
-            }
-            
-            Spacer()
-            
-            Text("Score: \(viewModel.stats.correctAnswers) / \(viewModel.stats.totalQuestions)")
-                .font(.footnote)
-            
-            // Countdown
-            CountdownComponent(isVisible: viewModel.settings.countdownEnabled && viewModel.settings.showCountdown, countdown: viewModel.settings.countdown)
-            
-            IntervalSelectionComponent(settings: viewModel.settings).padding(.bottom, 16)
-            
         }
         .padding(.horizontal, 16)
         .navigationBarItems(trailing: Button {
@@ -120,7 +114,6 @@ struct QuizView: View {
         }
     }
     
-    // Button Color Logic
     private func buttonColor(note: String) -> Color {
         if viewModel.filledNotes.values.contains(note) {
             return .green
