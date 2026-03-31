@@ -16,9 +16,11 @@ struct ContentView: View {
             Group {
                 switch settingsViewModel.mode {
                     case .completeScales:
-                    QuizView(viewModel: QuizViewModel(stats: statsViewModel, settings: settingsViewModel))
+                        QuizView(viewModel: QuizViewModel(stats: statsViewModel, settings: settingsViewModel))
                     case .guessIntervals:
                     IntervalView(viewModel: IntervalViewModel(stats: statsViewModel, settings: settingsViewModel))
+                    case .chords:
+                    ChordView(viewModel: ChordViewModel(stats: statsViewModel, settings: settingsViewModel))
                 }
             }
             .navigationTitle("Music Theory Trainer")

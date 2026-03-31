@@ -7,6 +7,7 @@ class SettingsViewModel: ObservableObject {
     @Published var enabledIntervals: Set<Int> = Set(1...7) {
         didSet { saveIntervals() }
     }
+    @Published var enabledChordTypes: Set<ChordType> = [.major, .minor]
     
     @Published var countdownEnabled: Bool = true {
         didSet { saveCountdownEnabled() }
@@ -14,7 +15,7 @@ class SettingsViewModel: ObservableObject {
     
     @Published var countdown: Int = 0
     @Published var showCountdown: Bool = false
-    let countdownTimer: Int = 2  // fixed duration
+    let countdownTimer: Int = 1  // fixed duration
     
     private let intervalsKey = "enabledIntervals"
     private let countdownKey = "countdownEnabled"

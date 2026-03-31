@@ -54,13 +54,13 @@ class QuizViewModel: ObservableObject {
     static func generateRandomQuestion(missingIndices: [Int], lastScale: String?) -> ScaleQuestion {
         var scale: [String]
         repeat {
-            scale = ScaleLibrary.randomScale()
+            scale = MusicLibrary.randomScale()
         } while scale[0] == lastScale  // ensure it’s not the same as last
         let validIndices = missingIndices.filter { $0 < scale.count }
         return ScaleQuestion(scaleName: scale[0], notes: scale, missingIndices: validIndices)
     }
     
     // Current keyboard is always all notes
-    var currentKeyboard: [String] { ScaleLibrary.keyboard(forScale: currentQuestion.notes) }
+    var currentKeyboard: [String] { MusicLibrary.keyboard(forScale: currentQuestion.notes) }
     
 }

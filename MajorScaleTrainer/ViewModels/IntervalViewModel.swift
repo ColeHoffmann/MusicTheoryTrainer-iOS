@@ -10,7 +10,7 @@ class IntervalViewModel: ObservableObject {
     @Published var intervalIndex: Int = 0        // 1 = root, 2 = 2nd, etc.
     @Published var selectedAnswer: String? = nil
     @Published var hasMistake = false
-    @Published var currentKeyboard: [String] = ScaleLibrary.sharpKeyboard
+    @Published var currentKeyboard: [String] = MusicLibrary.sharpKeyboard
     
     private var lastScaleName: String? = "z" // Track last scale
 
@@ -24,13 +24,13 @@ class IntervalViewModel: ObservableObject {
     func nextQuestion() {
            var newScale: [String]
            repeat {
-               newScale = ScaleLibrary.randomScale()
+               newScale = MusicLibrary.randomScale()
            } while newScale[0] == lastScaleName  // repeat until it’s a new scale
            currentScale = newScale
            scaleName = currentScale[0] + " major"
            intervalIndex = settings.enabledIntervals.randomElement() ?? 1
            selectedAnswer = nil
-           currentKeyboard = ScaleLibrary.keyboard(forScale: currentScale)
+           currentKeyboard = MusicLibrary.keyboard(forScale: currentScale)
         hasMistake = false
         
         intervalIndex = settings.enabledIntervals.randomElement() ?? 1

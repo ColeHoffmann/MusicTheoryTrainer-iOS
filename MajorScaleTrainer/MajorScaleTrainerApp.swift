@@ -13,7 +13,6 @@ struct MajorScaleTrainerApp: App {
         WindowGroup {
             ContentView()
             .preferredColorScheme(.light)
-
         }
     }
 }

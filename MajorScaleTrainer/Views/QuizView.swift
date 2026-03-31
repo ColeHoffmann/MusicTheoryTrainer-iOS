@@ -8,20 +8,16 @@ struct QuizView: View {
     var body: some View {
         VStack {
             
-            // ---------- TOP SECTION ----------
             VStack(spacing: 24) {
                 
-                // Scale Title
                 Text(viewModel.currentQuestion.scaleName + " Major")
                     .font(.title)
                     .fontWeight(.bold)
                 
-                // Scale notes
                 HStack(spacing: 16) {
                     ForEach(Array(viewModel.currentQuestion.notes.enumerated()), id: \.offset) { index, note in
                         VStack(spacing: 6) {
                             
-                            // NOTE AREA
                             ZStack {
                                 if viewModel.currentQuestion.missingIndices.contains(index) {
                                     if let filled = viewModel.filledNotes[index] {
@@ -38,7 +34,6 @@ struct QuizView: View {
                             }
                             .frame(height: 28)
                             
-                            // UNDERLINE
                             Rectangle()
                                 .fill(
                                     viewModel.currentQuestion.missingIndices.contains(index)
@@ -47,7 +42,6 @@ struct QuizView: View {
                                 )
                                 .frame(width: 32, height: 4)
                             
-                            // ORDINAL
                             Text((index + 1).ordinalString)
                                 .font(.caption2)
                                 .foregroundColor(.secondary)
@@ -59,7 +53,6 @@ struct QuizView: View {
                 .padding(.top, 16)
                 .animation(.easeOut(duration: 0.2), value: viewModel.filledNotes)
                 
-                // Feedback
                 Group {
                     if !viewModel.guessedNotes.isEmpty && !viewModel.settings.showCountdown {
                         if viewModel.filledNotes.count == viewModel.currentQuestion.missingIndices.count && !viewModel.hasMistake {
@@ -80,9 +73,8 @@ struct QuizView: View {
                 .frame(height: 24)
             }.padding(.top, 32)
             
-            Spacer()   // ← the only spacer, separating sections
+            Spacer()
             
-            // ---------- BOTTOM SECTION ----------
             VStack(spacing: 16) {
                 
                 KeyboardComponent(
