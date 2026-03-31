@@ -1,6 +1,6 @@
 import Foundation
 
-struct ScaleLibrary{
+struct MusicLibrary{
     
     
     static let allScales = [

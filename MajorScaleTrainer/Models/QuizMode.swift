@@ -10,4 +10,5 @@ import Foundation
 enum QuizMode {
     case completeScales
     case guessIntervals
+    case fillScales
 }
