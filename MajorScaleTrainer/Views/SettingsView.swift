@@ -32,8 +32,9 @@ struct SettingsView: View {
                         Picker("Mode", selection: $localMode) {
                             Text("Complete Scales").tag(QuizMode.completeScales)
                             Text("Guess Intervals").tag(QuizMode.guessIntervals)
+                            Text("Fill Chords").tag(QuizMode.chords)
                         }
-                        .pickerStyle(.segmented)
+                        .pickerStyle(.menu)
                     }
                     .padding(.horizontal)
                     .multilineTextAlignment(.center)

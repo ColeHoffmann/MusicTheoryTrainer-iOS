@@ -18,10 +18,8 @@ struct IntervalView: View {
             
             Spacer()
             
-            //Keyboard
             KeyboardComponent(notes: viewModel.currentKeyboard,isDisabled: viewModel.settings.showCountdown ,buttonColor: buttonColor,onTap: viewModel.selectNote)
             
-            // Feedback + Countdown stack (fixed height)
             VStack(spacing: 4) {
                 if let selected = viewModel.selectedAnswer {
                     if selected == viewModel.currentScale[viewModel.intervalIndex - 1] {
@@ -34,19 +32,18 @@ struct IntervalView: View {
                             .font(.headline)
                     }
                 } else {
-                    Text(" ") // placeholder before guess
+                    Text(" ")
                         .font(.headline)
                 }
                 
                 CountdownComponent(isVisible: viewModel.settings.countdownEnabled && viewModel.settings.showCountdown, countdown:viewModel.settings.countdown)
 
             }
-            .frame(height: 50) // reserve space like QuizView
+            .frame(height: 50)
             .padding(.bottom, 8)
             
             Spacer()
             
-            // Score
             Text("Score: \(viewModel.stats.correctAnswers) / \(viewModel.stats.totalQuestions)")
                 .font(.footnote)
                 .padding(.bottom, 4)
@@ -56,7 +53,7 @@ struct IntervalView: View {
         .navigationBarItems(trailing: Button {
             showSettings = true
         } label: {
-            Image(systemName: "line.horizontal.3") // hamburger icon
+            Image(systemName: "line.horizontal.3")
         })
         .sheet(isPresented: $showSettings) {
             SettingsView(settings: viewModel.settings, stats: viewModel.stats, isPresented: $showSettings)

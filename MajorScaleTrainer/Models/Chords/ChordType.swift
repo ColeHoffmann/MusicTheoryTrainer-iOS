@@ -16,19 +16,9 @@ enum ChordType: String, CaseIterable, Identifiable, Codable {
 
     var id: String { rawValue }
 
-    var displayName: String {
-        switch self {
-        case .major: return "Major"
-        case .minor: return "Minor"
-        case .major7: return "Major 7"
-        case .dominant7: return "Dominant 7"
-        case .minor7: return "Minor 7"
-        }
-    }
-
     var suffix: String {
         switch self {
-        case .major: return ""
+        case .major: return "major"
         case .minor: return "m"
         case .major7: return "Maj7"
         case .dominant7: return "7"
